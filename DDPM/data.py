@@ -1,5 +1,4 @@
 import os
-os.environ["HF_ENDPOINT"] = "https://hf-mirror.com" 
 from dataclasses import dataclass
 from datasets import load_dataset
 from torchvision import transforms
@@ -20,7 +19,9 @@ class TrainingConfig:
 
 config = TrainingConfig()
 
-dataset = load_dataset("huggan/anime-faces", split="train")
+dataset = load_dataset("imagefolder", 
+                       data_dir="./dataset/anime_face/data",
+                       split="train")
 dataset = dataset.select(range(21551))
 print(dataset.shape)
 
@@ -29,7 +30,6 @@ def get_transforms():
         transforms.Resize(config.image_size),
         transforms.ToTensor(),
         transforms.Normalize([0.5], [0.5])
-
     ])
     
     def transform(sample):

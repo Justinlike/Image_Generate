@@ -1,6 +1,7 @@
 from diffusers import UNet2DModel
 from data import config
 import torch
+from tqdm import tqdm
 
 model = UNet2DModel(
     sample_size=config.image_size,
@@ -8,14 +9,14 @@ model = UNet2DModel(
     out_channels=3,
     layers_per_block=2,
     block_out_channels=(128, 128, 256, 256, 512, 512),
-    dowm_block_types=(
+    down_block_types=(
         "DownBlock2D",
         "DownBlock2D",
         "DownBlock2D",
         "DownBlock2D",
         "AttnDownBlock2D",
         "DownBlock2D",
-    )
+    ),
     up_block_types=(
         "UpBlock2D",
         "AttnUpBlock2D",
@@ -23,7 +24,7 @@ model = UNet2DModel(
         "UpBlock2D",
         "UpBlock2D",
         "UpBlock2D",
-    )
+    ), 
 )
 
 class DDPM:
@@ -33,8 +34,10 @@ class DDPM:
                  beta_end: float = 0.02,
                  ) -> None:
         self.betas = torch.linspace(beta_start, beta_end, num_train_steps, dtype=torch.float32)
-        self.alphas - 1.0 - self.betas
+        self.alphas = 1.0 - self.betas
         self.alphas_cumprod = torch.cumprod(self.alphas, dim=0)
+        self.timesteps = torch.arange(num_train_steps - 1, -1, -1)
+        self.num_train_timesteps = num_train_steps
     
     def add_noise(
             self,
@@ -94,7 +97,7 @@ class DDPM:
             epsilon = torch.randn_like(images)
             images = mean + variance * epsilon
         
-        images = (images / 2.0 + 0.5).clamp(0, 1).cup().permute(0, 2, 3, 1).numpy()
+        images = (images / 2.0 + 0.5).clamp(0, 1).cpu().permute(0, 2, 3, 1).numpy()
         return images
     
 

@@ -30,6 +30,7 @@ conda-env/
 # 数据集文件夹 (假设你的数据放在这些目录下)
 data/
 datasets/
+dataset/
 SleepEDF/
 MNIST/
 *.zip
@@ -41,6 +42,7 @@ logs/
 runs/
 checkpoints/
 output/
+ddpm-animefaces-64/
 *.log
 
 # ==========================================
