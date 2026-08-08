@@ -58,7 +58,7 @@ class DDPM:
         sqrt_one_minus_alpha_prod = torch.sqrt((1.0 - alphas_cumprod[timesteps])[:, None, None, None])
         while len(sqrt_one_minus_alpha_prod.shape) < len(orignial_samples.shape):
             sqrt_one_minus_alpha_prod = sqrt_one_minus_alpha_prod.unsqueeze(-1)
-        return sqrt_alphas_prod * orignial_samples + sqrt_one_minus_alpha_prod
+        return sqrt_alphas_prod * orignial_samples + sqrt_one_minus_alpha_prod * noise
 
     @torch.no_grad()
     def sample(
