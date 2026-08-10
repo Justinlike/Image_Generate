@@ -3,10 +3,22 @@ from diffusers.optimization import get_cosine_schedule_with_warmup
 from diffusers.utils import make_image_grid, numpy_to_pil
 import torch.nn.functional as F
 import os
-from data import dataloader, config
 from model import model, DDPM
 from tqdm import tqdm
 import torch
+from datasets import load_dataset
+from data import config, get_transforms
+from torch.utils.data import DataLoader
+
+
+dataset = load_dataset("imagefolder", 
+                       data_dir="./dataset/anime_face/data",
+                       split="train")
+
+dataset = dataset.select(range(21551))
+print(dataset.shape)
+dataset.set_transform(get_transforms())
+dataloader = DataLoader(dataset=dataset, batch_size=config.train_batch_size, shuffle=True)
 
 model = model.cuda()
 ddpm = DDPM()

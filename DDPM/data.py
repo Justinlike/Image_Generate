@@ -1,8 +1,6 @@
 import os
 from dataclasses import dataclass
-from datasets import load_dataset
 from torchvision import transforms
-from torch.utils.data import DataLoader
 
 @dataclass
 class TrainingConfig:
@@ -19,12 +17,6 @@ class TrainingConfig:
 
 config = TrainingConfig()
 
-dataset = load_dataset("imagefolder", 
-                       data_dir="./dataset/anime_face/data",
-                       split="train")
-dataset = dataset.select(range(21551))
-print(dataset.shape)
-
 def get_transforms():
     preprocess = transforms.Compose([
         transforms.Resize(config.image_size),
@@ -38,7 +30,3 @@ def get_transforms():
     
     return transform
 
-dataset.set_transform(get_transforms())
-
-
-dataloader = DataLoader(dataset=dataset, batch_size=config.train_batch_size, shuffle=True)
